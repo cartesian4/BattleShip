@@ -16,17 +16,18 @@ def get_username():
             return user_name
         else:
             print("Please enter your name.")
-get_username()
-try:
-    map_size = int(input("\nChoose a map size between 5 and 100: "))
-except ValueError:
-    print("\nInvalid input. Please enter a valid integer.")
+
+def get_map_size():
+    try:
+        map_size = int(input("\nChoose a map size between 5 and 100: "))
+    except ValueError:
+        print("\nInvalid input. Please enter a valid integer.")
 
 def create_battlefield(map_size):
     """
     function to create a map based on size
     """
-    return [["_"] * map_size for _ in range(map_size)]
+    return [["|"]["_|"] * map_size for _ in range(map_size)]
 
 
 def display_battlefield(board):
@@ -121,7 +122,7 @@ def comp_ship_coordinate(comp_board):
         while True:
             row = randrange(0, 10)
             col = randrange(0, 10)
-            if comp_board[row][col] == "_":
+            if comp_board[row][col] == "|-|":
                 comp_board[row][col] = ship
                 break
 
@@ -192,7 +193,7 @@ def check_comp_hit(player_board, comp_hit):
 if __name__ == "__main__":
 
         get_username()
-
+        get_map_size()
         player_board = create_battlefield(map_size)
         comp_board = create_battlefield(map_size)
 
