@@ -162,8 +162,9 @@ def check_player_hit(comp_board, player_hit):
     return player_hit
 
 def get_input_from_comp(): 
-    row = int(input("\nEnter your row: "))
-    col = int(input("Enter your col: "))
+    row = randrange(0, map_size)
+    col = randrange(0, map_size)
+    print(f"Computer guessed: Row {row}, Column {col}")
     return row, col
 
 def check_comp_hit(player_board, comp_hit):
@@ -206,6 +207,8 @@ while playing:
             print("\nInvalid input. Please enter a valid integer.")
         player_board = create_battlefield(map_size)
         comp_board = create_battlefield(map_size)
+        player_hit = create_battlefield(map_size)
+        comp_hit = create_battlefield(map_size)
 
         occupied = set()
 
@@ -218,7 +221,6 @@ while playing:
         display_battlefield(comp_board)
 
         print("\nIt's your turn to guess!")
-        get_input_from_player()
         check_player_hit(comp_board, player_hit)
 
         print("\nComputer's turn to guess!")
