@@ -23,15 +23,13 @@ def get_map_size():
     except ValueError or (100 < map_size < 5):
         print("\nInvalid input. Please enter a valid integer.")
 
-def create_battlefield_based_on(map_size):
+def create_battlefield(map_size):
 
-    return [["|"]["_|"] * map_size for _ in range(map_size)]
+    return [["|_|"] * map_size for _ in range(map_size)]
 
 
 def display_battlefield(board):
-    """
-    function to display current state of the map.
-    """
+
     for row in board:
         print(" ".join(row))
 
@@ -191,7 +189,12 @@ def check_comp_hit(player_board, comp_hit):
 if __name__ == "__main__":
 
         get_username()
-        get_map_size()
+        try:
+            map_size = int(input("\nChoose a map size between 5 and 100: "))
+            if not (5 <= map_size <= 100):
+                raise ValueError("Map size must be between 5 and 100.")
+        except ValueError:
+            print("\nInvalid input. Please enter a valid integer.")
         player_board = create_battlefield(map_size)
         comp_board = create_battlefield(map_size)
 
