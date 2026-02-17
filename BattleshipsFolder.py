@@ -20,13 +20,11 @@ def get_username():
 def get_map_size():
     try:
         map_size = int(input("\nChoose a map size between 5 and 100: "))
-    except ValueError:
+    except ValueError or (100 < map_size < 5):
         print("\nInvalid input. Please enter a valid integer.")
 
-def create_battlefield(map_size):
-    """
-    function to create a map based on size
-    """
+def create_battlefield_based_on(map_size):
+
     return [["|"]["_|"] * map_size for _ in range(map_size)]
 
 
