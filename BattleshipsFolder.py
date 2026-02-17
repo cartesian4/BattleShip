@@ -1,5 +1,7 @@
 from random import randrange
 
+playing = True
+
 print("BATTLESHIPS")
 ship_initial = ["B", "C", "F", "A", "S"]
 ship_names = ["Battleship", "Cruiser", "Frigate", "Aircraft Carrier", "Sub"]
@@ -116,12 +118,14 @@ def comp_ship_coordinate(comp_board):
     """
     for ship in ship_initial:
         while True:
-            row = randrange(0, 10)
-            col = randrange(0, 10)
+            row = randrange(0, map_size)
+            col = randrange(0, map_size)
             if comp_board[row][col] == "|-|":
                 comp_board[row][col] = ship
                 break
-
+    print("\nComputer has placed its ships.")
+    print("Computer's battlefield:")
+    print(comp_board)
     return comp_board
 
 def get_input(): 
@@ -186,7 +190,7 @@ def check_comp_hit(player_board, comp_hit):
     return comp_hit
 
 
-if __name__ == "__main__":
+while playing:
 
         get_username()
         try:
