@@ -3,7 +3,7 @@ from random import randrange
 playing = True
 
 print("BATTLESHIPS")
-ship_initial = ["B", "C", "F", "A", "S"]
+ship_initial = ["B|", "C|", "F|", "A|", "S|"]
 ship_names = ["Battleship", "Cruiser", "Frigate", "Aircraft Carrier", "Sub"]
 
 
@@ -21,13 +21,13 @@ def get_username():
 
 def get_map_size():
     try:
-        map_size = int(input("\nChoose a map size between 5 and 100: "))
+        map_size = int(input("\nChoose a map size between 5 and 100 (From 0): "))
     except ValueError or (100 < map_size < 5):
         print("\nInvalid input. Please enter a valid integer.")
 
 def create_battlefield(map_size):
 
-    return [["|_|"] * map_size for _ in range(map_size)]
+    return [["_|"] * (map_size-0) for _ in range(map_size-0)]
 
 
 def display_battlefield(board):
@@ -44,10 +44,11 @@ def player_ship_coordinate(player_board, occupied):
     """
     while True:
         try:
-            row = int(input("Enter the row for Battleship: "))
-            col = int(input("Enter the column for Battleship: "))
+            row = int(input("Enter the row for Battleship: "))-1
+            col = int(input("Enter the column for Battleship: "))-1
+
             if viable_location(row, col):
-                player_board[row][col] = "B"
+                player_board[row][col] = "B|"
                 occupied.add((row, col))
                 break
             else:
@@ -57,10 +58,11 @@ def player_ship_coordinate(player_board, occupied):
 
     while True:
         try:
-            row = int(input("Enter the row for Cruiser: "))
-            col = int(input("Enter the column for Cruiser: "))
+            row = int(input("Enter the row for Cruiser: "))-1
+            col = int(input("Enter the column for Cruiser: "))-1
+
             if viable_location(row, col):
-                player_board[row][col] = "C"
+                player_board[row][col] = "C|"
                 occupied.add((row, col))
                 break
             else:
@@ -70,10 +72,11 @@ def player_ship_coordinate(player_board, occupied):
 
     while True:
         try:
-            row = int(input("Enter the row for Frigate: "))
-            col = int(input("Enter the column for Frigate: "))
+            row = int(input("Enter the row for Frigate: "))-1
+            col = int(input("Enter the column for Frigate: "))-1
+
             if viable_location(row, col):
-                player_board[row][col] = "F"
+                player_board[row][col] = "F|"
                 occupied.add((row, col))
                 break
             else:
@@ -83,11 +86,11 @@ def player_ship_coordinate(player_board, occupied):
 
     while True:
         try:
-            row = int(input("Enter the row for Aircraft Carrier: "))
-            col = int(input("Enter the column for Aircraft Carrier: "))
+            row = int(input("Enter the row for Aircraft Carrier: "))-1
+            col = int(input("Enter the column for Aircraft Carrier: "))-1
 
             if viable_location(row, col):
-                player_board[row][col] = "A"
+                player_board[row][col] = "A|"
                 occupied.add((row, col))
                 break
             else:
@@ -97,11 +100,11 @@ def player_ship_coordinate(player_board, occupied):
 
     while True:
         try:
-            row = int(input("Enter the row for Submarine: "))
-            col = int(input("Enter the column for Submarine: "))
+            row = int(input("Enter the row for Submarine: "))-1
+            col = int(input("Enter the column for Submarine: "))-1
 
-            if 0 <= row < map_size and 0 <= col < map_size and (row, col) not in occupied:
-                player_board[row][col] = "S"
+            if viable_location(row, col):
+                player_board[row][col] = "S|"
                 occupied.add((row, col))
                 break
             else:
@@ -120,71 +123,73 @@ def comp_ship_coordinate(comp_board):
         while True:
             row = randrange(0, map_size)
             col = randrange(0, map_size)
-            if comp_board[row][col] == "|-|":
+            if comp_board[row][col] == "|_|":
+                # Check if the ship can be placed at the random location
                 comp_board[row][col] = ship
                 break
-    print("\nComputer has placed its ships.")
-    print("Computer's battlefield:")
-    print(comp_board)
     return comp_board
 
-def get_input(): 
-    row = int(input("Enter your row: "))
-    col = int(input("Enter your col:"))
+def get_input_from_player(): 
+    row = int(input("\nEnter your row: "))
+    col = int(input("Enter your col: "))
     return row, col
 
 def check_player_hit(comp_board, player_hit):
     """
     function for player hit or missed on enemy ship
     """
-    row, col = get_input()
+    row, col = get_input_from_player()
     
-    if comp_board[row][col] == "B":
-        player_hit[row][col] = "B"
+    if comp_board[row][col] == "B|":
+        player_hit[row][col] = "B|"
         print("Computer: Battleship been hit!")
-    elif comp_board[row][col] == "C":
-        player_hit[row][col] = "C"
+    elif comp_board[row][col] == "C|":
+        player_hit[row][col] = "C|"
         print("Computer: Cruiser been hit!")
-    elif comp_board[row][col] == "F":
-        player_hit[row][col] = "F"
+    elif comp_board[row][col] == "F|":
+        player_hit[row][col] = "F|"
         print("Computer: Frigate been hit!")
-    elif comp_board[row][col] == "A":
-        player_hit[row][col] = "A"
+    elif comp_board[row][col] == "A|":
+        player_hit[row][col] = "A|"
         print("Computer: Aircraft Carrier been hit")
-    elif comp_board[row][col] == "S":
-        player_hit[row][col] = "S"
+    elif comp_board[row][col] == "S|":
+        player_hit[row][col] = "S|"
         print("Computer: Sub been hit")
     else:
-        player_hit[row][col] = "M"
+        player_hit[row][col] = "M|"
         print("Missed me!")
 
     return player_hit
 
+def get_input_from_comp(): 
+    row = int(input("\nEnter your row: "))
+    col = int(input("Enter your col: "))
+    return row, col
 
 def check_comp_hit(player_board, comp_hit):
     """
-    function for comp hit or missed on the player ship
+    function for whether the computer hit or missed the player ship
     """
     row = (int(input("Enter your coordinate: ")))
     col = (int(input("Enter your coordinate: ")))
 
-    if player_board[row][col] == "B":
-        comp_hit[row][col] = "B"
+    if player_board[row][col] == "B|":
+        comp_hit[row][col] = "B|"
         print("Player: Battleship been hit!")
-    elif player_board[row][col] == "C":
-        comp_hit[row][col] = "C"
+    elif player_board[row][col] == "C|":
+        comp_hit[row][col] = "C|"
         print("Player: Cruiser been hit!")
-    elif player_board[row][col] == "F":
-        comp_hit[row][col] = "F"
+    elif player_board[row][col] == "F|":
+        comp_hit[row][col] = "F|"
         print("Player: Frigate been hit!")
-    elif player_board[row][col] == "A":
-        comp_hit[row][col] = "A"
+    elif player_board[row][col] == "A|":
+        comp_hit[row][col] = "A|"
         print("Player: Aircraft carrier been hit!")
-    elif player_board[row][col] == "S":
-        comp_hit[row][col] = "S"
+    elif player_board[row][col] == "S|":
+        comp_hit[row][col] = "S|"
         print("Player: Sub been hit!")
     else:
-        comp_hit[row][col] = "M"
+        comp_hit[row][col] = "M|"
         print("Missed me!")
 
     return comp_hit
@@ -204,10 +209,18 @@ while playing:
 
         occupied = set()
 
-        print("\nPlayer's turn:")
+        print("\nPlayer's board:")
         player_ship_coordinate(player_board, occupied)
         display_battlefield(player_board)
 
-        print("\nComputer opponent's turn:")
-        comp_ship_coordinate(comp_board)
+        print("\nYour guesses so far:")
+    #Doesn't function: comp_ship_coordinate(comp_board)
         display_battlefield(comp_board)
+
+        print("\nIt's your turn to guess!")
+        get_input_from_player()
+        check_player_hit(comp_board, player_hit)
+
+        print("\nComputer's turn to guess!")
+        get_input_from_comp()
+        check_comp_hit(player_board, comp_hit)
