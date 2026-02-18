@@ -129,9 +129,19 @@ def comp_ship_coordinate(comp_board):
                 break
     return comp_board
 
-def get_input_from_player(): 
-    row = int(input("\nEnter your row: "))
-    col = int(input("Enter your col: "))
+def get_input_from_player():
+    while True:
+        row = int(input("\nEnter your row: "))-1
+        col = int(input("Enter your col: "))-1
+        try:
+            if viable_location(row, col):
+                player_hit[row][col] = "*|"
+                occupied.add((row, col))
+                break
+            else:
+                print("Invalid coordinates. Please enter correct values")
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
     return row, col
 
 def check_player_hit(comp_board, player_hit):
@@ -157,7 +167,7 @@ def check_player_hit(comp_board, player_hit):
         print("Computer: Sub been hit")
     else:
         player_hit[row][col] = "M|"
-        print("Missed me!")
+        print("Missed comp!")
 
     return player_hit
 
@@ -171,8 +181,7 @@ def check_comp_hit(player_board, comp_hit):
     """
     function for whether the computer hit or missed the player ship
     """
-    row = (int(input("Enter your coordinate: ")))
-    col = (int(input("Enter your coordinate: ")))
+    row, col = get_input_from_comp()
 
     if player_board[row][col] == "B|":
         comp_hit[row][col] = "B|"
@@ -199,12 +208,13 @@ def check_comp_hit(player_board, comp_hit):
 while playing:
 
         get_username()
-        try:
-            map_size = int(input("\nChoose a map size between 5 and 100: "))
-            if not (5 <= map_size <= 100):
-                raise ValueError("Map size must be between 5 and 100.")
-        except ValueError:
-            print("\nInvalid input. Please enter a valid integer.")
+        while True:
+            try:
+                map_size = int(input("\nChoose a map size between 5 and 100: "))
+                if not (5 <= map_size <= 100):
+                    raise ValueError("Map size must be between 5 and 100.")
+            except ValueError:
+                print("\nInvalid input. Please enter a valid integer.")
         player_board = create_battlefield(map_size)
         comp_board = create_battlefield(map_size)
         player_hit = create_battlefield(map_size)
@@ -218,11 +228,10 @@ while playing:
 
         print("\nYour guesses so far:")
     #Doesn't function: comp_ship_coordinate(comp_board)
-        display_battlefield(comp_board)
+        display_battlefield(player_hit)
 
         print("\nIt's your turn to guess!")
         check_player_hit(comp_board, player_hit)
 
         print("\nComputer's turn to guess!")
-        get_input_from_comp()
         check_comp_hit(player_board, comp_hit)
