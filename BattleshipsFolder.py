@@ -38,6 +38,12 @@ def display_battlefield(board):
 def viable_location(row, col):
     return (0 <= row < map_size and 0 <= col < map_size and (row, col) not in occupied)
 
+def viable_location_hits(row, col):
+    return (0 <= row < map_size and 0 <= col < map_size and (row, col) not in shots)
+
+def viable_location_comp(row, col):
+    return (0 <= row < map_size and 0 <= col < map_size and (row, col) not in opp)
+
 def player_ship_coordinate(player_board, occupied):
     """
     function for player placement ship
@@ -134,9 +140,9 @@ def get_input_from_player():
         row = int(input("\nEnter your row: "))-1
         col = int(input("Enter your col: "))-1
         try:
-            if viable_location(row, col):
+            if viable_location_hits(row, col):
                 player_hit[row][col] = "*|"
-                occupied.add((row, col))
+                shots.add((row, col))
                 break
             else:
                 print("Invalid coordinates. Please enter correct values")
@@ -167,14 +173,23 @@ def check_player_hit(comp_board, player_hit):
         print("Computer: Sub been hit")
     else:
         player_hit[row][col] = "M|"
-        print("Missed comp!")
+        print("You missed!")
+    
 
     return player_hit
 
 def get_input_from_comp(): 
-    row = randrange(0, map_size)
-    col = randrange(0, map_size)
-    print(f"Computer guessed: Row {row}, Column {col}")
+    while True:
+        row = randrange(0, map_size)
+        col = randrange(0, map_size)
+        if viable_location_comp(row, col):
+            comp_hit[row][col] = "*|"
+            player_board[row][col] = "*|"
+            opp.add((row, col))
+            break
+        else:
+            did_it_work = False
+    print(f"Computer guessed: Row {row+1}, Column {col+1}")
     return row, col
 
 def check_comp_hit(player_board, comp_hit):
@@ -200,7 +215,7 @@ def check_comp_hit(player_board, comp_hit):
         print("Player: Sub been hit!")
     else:
         comp_hit[row][col] = "M|"
-        print("Missed me!")
+        print("Opponent missed!")
 
     return comp_hit
 
@@ -213,6 +228,8 @@ while playing:
                 map_size = int(input("\nChoose a map size between 5 and 100: "))
                 if not (5 <= map_size <= 100):
                     raise ValueError("Map size must be between 5 and 100.")
+                else:
+                    break
             except ValueError:
                 print("\nInvalid input. Please enter a valid integer.")
         player_board = create_battlefield(map_size)
@@ -221,17 +238,24 @@ while playing:
         comp_hit = create_battlefield(map_size)
 
         occupied = set()
+        shots = set()
+        guesses = 10
 
         print("\nPlayer's board:")
         player_ship_coordinate(player_board, occupied)
         display_battlefield(player_board)
 
-        print("\nYour guesses so far:")
+
     #Doesn't function: comp_ship_coordinate(comp_board)
-        display_battlefield(player_hit)
+        for n in range(10):
+            print("\nIt's your turn to guess!")
+            check_player_hit(comp_board, player_hit)
+            guesses=guesses-1
+            display_battlefield(player_board)
+            print("\nYour guesses so far:")        
+            display_battlefield(player_hit)
+            print(f"You have {guesses} guesses left.")
+            
 
-        print("\nIt's your turn to guess!")
-        check_player_hit(comp_board, player_hit)
-
-        print("\nComputer's turn to guess!")
-        check_comp_hit(player_board, comp_hit)
+            print("\nComputer's turn to guess!")
+            check_comp_hit(player_board, comp_hit)
