@@ -117,10 +117,7 @@ def player_ship_coordinate(player_board, occupied):
 
 
 def comp_ship_coordinate(comp_board):
-    """
-    function for computer opponent.
-    """
-    # pick 5 values between 0 and map_size * map_size
+    # Picks 5 values between 0 and map_size * map_size and creates opponent board
     unique_array = rand.sample(range(0, map_size * map_size), len(ship_initial))
     for position in unique_array:
         x = position // map_size
@@ -129,12 +126,13 @@ def comp_ship_coordinate(comp_board):
     return comp_board
 
 def get_input_from_player():
+    #Collects player guess
     while True:
         try:
             row = int(input("\nEnter your row: "))-1
             col = int(input("Enter your col: "))-1
             if viable_location_hits(row, col):
-                player_hit[row][col] = "*|"
+                player_hit[row][col] = "This does nothing.|"
                 shots.add((row, col))
                 break
             else:
@@ -144,9 +142,7 @@ def get_input_from_player():
     return row, col
 
 def check_player_hit(comp_board, player_hit, row, col):
-    """
-    function for player hit or missed on enemy ship
-    """
+    #Player hit or missed on enemy ship
     if comp_board[row][col] == "X|":
         player_hit[row][col] = "H|"
         print("Computer Battleship has been hit!")
@@ -156,34 +152,27 @@ def check_player_hit(comp_board, player_hit, row, col):
     return player_hit
 
 def check_comp_hit(player_board, comp_hit, row, col):
-    """
-    function for whether the computer hit or missed the player ship
-    """
+    #Whether the computer hit or missed the player ship
     print(f"Computer guessed: Row {row+1}, Column {col+1}")
     if player_board[row][col] == "B|":
         comp_hit[row][col] = "B|"
-        player_board[row][col] = "*|"
         print("Player Battleship has been hit!")
     elif player_board[row][col] == "C|":
         comp_hit[row][col] = "C|"
-        player_board[row][col] = "*|"
         print("Player Cruiser has been hit!")
     elif player_board[row][col] == "F|":
         comp_hit[row][col] = "F|"
-        player_board[row][col] = "*|"
         print("Player Frigate has been hit!")
     elif player_board[row][col] == "A|":
         comp_hit[row][col] = "A|"
-        player_board[row][col] = "*|"
         print("Player Aircraft carrier has been hit!")
     elif player_board[row][col] == "S":
         comp_hit[row][col] = "S|"
         print("Player Sub has been hit!")
-        player_board[row][col] = "*|"
     else:
         comp_hit[row][col] = "M|"
         print("Opponent missed!")
-
+    player_board[row][col] = "*|"
     return comp_hit
 
 
