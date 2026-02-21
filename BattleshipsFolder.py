@@ -227,13 +227,13 @@ while playing:
     display_battlefield(player_board)
 
     for n in range(guesses):
-        playing = check_win(player_hit, comp_hit)
         print("\nIt's your turn to guess!")
         row, col = get_input_from_player()
         check_player_hit(comp_board, player_hit, row, col)
         guesses=guesses-1
         print("\nYour guesses so far:")        
         display_battlefield(player_hit)
+        #Pluralization for guesses left
         if guesses > 1:
             print(f"You have {guesses} guesses left.")
         elif guesses == 1:
@@ -255,5 +255,7 @@ while playing:
                 print("\nCongratulations! You've sunk more computer ships than the computer. You win!")
                 break
             elif player_ships_hit < comp_ships_hit:
-                print("\nGame over! The computer has sunk more of your ships than you sunk. You lose!")
+                print("\nGame over! The computer has sunk more of your ships than you. You lose!")
+        if check_win(player_ships_hit, comp_ships_hit):
+            guesses = 0
     playing = play_again()    
