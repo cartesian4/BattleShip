@@ -3,10 +3,9 @@ from random import randrange
 
 playing = True
 
-print("BATTLESHIPS")
 ship_initial = ["B|", "C|", "F|", "A|", "S|"]
 ship_names = ["Battleship", "Cruiser", "Frigate", "Aircraft Carrier", "Sub"]
-player_number_of_ships = len(ship_initial)
+number_of_ships = len(ship_initial)
 
 def get_username():
     """
@@ -145,7 +144,7 @@ def check_player_hit(comp_board, player_hit, row, col):
     #Player hit or missed on enemy ship
     if comp_board[row][col] == "X|":
         player_hit[row][col] = "H|"
-        print("Computer Battleship has been hit!")
+        print("Computer Ship has been hit!")
     else:
         player_hit[row][col] = "M|"
         print("You missed!")
@@ -169,54 +168,92 @@ def check_comp_hit(player_board, comp_hit, row, col):
     elif player_board[row][col] == "S":
         comp_hit[row][col] = "S|"
         print("Player Sub has been hit!")
+
     else:
         comp_hit[row][col] = "M|"
         print("Opponent missed!")
     player_board[row][col] = "*|"
     return comp_hit
 
+def play_again():
+    while True:
+        #Asks player if they want to play again and make lowercase for easier input
+        play_again_input = input("\nDo you want to play again? (yes/no): ").lower()
+        if play_again_input in ["yes", "y"]:
+            return True
+        elif play_again_input in ["no", "n"]:
+            print("Thanks for playing! Goodbye!")
+            return False
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+def check_win(player_ships_hit, comp_ships_hit):
+    #Checks if player or computer has won the game
+    if player_ships_hit == number_of_ships:
+        print("\nCongratulations! You've sunk all the computer's ships. You win!")
+        return False
+    elif comp_ships_hit == number_of_ships:
+        print("\nGame over! The computer has sunk all your ships. You lose!")
+        return False
+    return True
 
 while playing:
+    print("BATTLESHIPS\n")
+    get_username()
+    while True:
+        try:
+            map_size = int(input("\nChoose a map size between 5 and 50: "))
+            if not (5 <= map_size <= 50):
+                raise ValueError("Map size must be between 5 and 100.")
+            else:
+                break
+        except ValueError:
+            print("\nInvalid input. Please enter a valid integer.")
 
-        get_username()
-        while True:
-            try:
-                map_size = int(input("\nChoose a map size between 5 and 100: "))
-                if not (3 <= map_size <= 100):
-                    raise ValueError("Map size must be between 5 and 100.")
-                else:
-                    break
-            except ValueError:
-                print("\nInvalid input. Please enter a valid integer.")
-        player_board = create_battlefield(map_size)
-        comp_board = create_battlefield(map_size)
-        player_hit = create_battlefield(map_size)
-        comp_hit = create_battlefield(map_size)
-        comp_ship_coordinate(comp_board)
-        comp_shots = rand.sample(range(0, map_size * map_size), (map_size * map_size))
+    player_board = create_battlefield(map_size)
+    comp_board = create_battlefield(map_size)
+    player_hit = create_battlefield(map_size)
+    comp_hit = create_battlefield(map_size)
+    comp_ship_coordinate(comp_board)
+    comp_shots = rand.sample(range(0, map_size * map_size), (map_size * map_size))
 
-        occupied = set()
-        shots = set()
-        opp = set()
-        guesses = 10
+    occupied = set()
+    shots = set()
+    opp = set()
+    guesses = 10
 
-        print("\nPlayer's board:")
-        player_ship_coordinate(player_board, occupied)
+    print("\nPlayer's board:")
+    player_ship_coordinate(player_board, occupied)
+    display_battlefield(player_board)
+
+    for n in range(guesses):
+        playing = check_win(player_hit, comp_hit)
+        print("\nIt's your turn to guess!")
+        row, col = get_input_from_player()
+        check_player_hit(comp_board, player_hit, row, col)
+        guesses=guesses-1
+        print("\nYour guesses so far:")        
+        display_battlefield(player_hit)
+        if guesses > 1:
+            print(f"You have {guesses} guesses left.")
+        elif guesses == 1:
+            print(f"You have {guesses} guess left.")
+
+        print("\nComputer's turn to guess!")
+        position = comp_shots[n]
+        row = position // map_size
+        col = position % map_size
+        check_comp_hit(player_board, comp_hit, row, col)
         display_battlefield(player_board)
 
-        for n in range(10):
-            print("\nIt's your turn to guess!")
-            row, col = get_input_from_player()
-            check_player_hit(comp_board, player_hit, row, col)
-            guesses=guesses-1
-            print("\nYour guesses so far:")        
-            display_battlefield(player_hit)
-            print(f"You have {guesses} guesses left.")
-            
-
-            print("\nComputer's turn to guess!")
-            position = comp_shots[n]
-            row = position // map_size
-            col = position % map_size
-            check_comp_hit(player_board, comp_hit, row, col)
-            display_battlefield(player_board)
+        #If guesses are 0, check who won and end game
+        if guesses == 0:
+            player_ships_hit = sum(row.count("H|") for row in player_hit)
+            comp_ships_hit = sum(row.count("B|") + row.count("C|") + row.count("F|") + row.count("A|") + row.count("S|") for row in comp_hit)
+            print("\nYou've used all your guesses.")
+            if player_ships_hit > comp_ships_hit:
+                print("\nCongratulations! You've sunk more computer ships than the computer. You win!")
+                break
+            elif player_ships_hit < comp_ships_hit:
+                print("\nGame over! The computer has sunk more of your ships than you sunk. You lose!")
+    playing = play_again()    
