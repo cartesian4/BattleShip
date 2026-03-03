@@ -198,7 +198,7 @@ def check_win(player_ships_hit, comp_ships_hit):
     return True
 
 while playing:
-    print("BATTLESHIPS\n")
+    print("\nBATTLESHIPS\n")
     get_username()
     while True:
         try:
@@ -227,6 +227,8 @@ while playing:
     display_battlefield(player_board)
 
     for n in range(guesses):
+        player_ships_hit = sum(row.count("H|") for row in player_hit)
+        comp_ships_hit = sum(row.count("B|") + row.count("C|") + row.count("F|") + row.count("A|") + row.count("S|") for row in comp_hit)
         print("\nIt's your turn to guess!")
         row, col = get_input_from_player()
         check_player_hit(comp_board, player_hit, row, col)
@@ -248,8 +250,6 @@ while playing:
 
         #If guesses are 0, check who won and end game
         if guesses == 0:
-            player_ships_hit = sum(row.count("H|") for row in player_hit)
-            comp_ships_hit = sum(row.count("B|") + row.count("C|") + row.count("F|") + row.count("A|") + row.count("S|") for row in comp_hit)
             print("\nYou've used all your guesses.")
             if player_ships_hit > comp_ships_hit:
                 print("\nCongratulations! You've sunk more computer ships than the computer. You win!")
