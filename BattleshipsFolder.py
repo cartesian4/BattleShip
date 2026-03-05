@@ -191,11 +191,11 @@ def check_win(player_ships_hit, comp_ships_hit):
     #Checks if player or computer has won the game
     if player_ships_hit == number_of_ships:
         print("\nCongratulations! You've sunk all the computer's ships. You win!")
-        return False
+        return True
     elif comp_ships_hit == number_of_ships:
         print("\nGame over! The computer has sunk all your ships. You lose!")
-        return False
-    return True
+        return True
+    return False
 
 while playing:
     print("\nBATTLESHIPS\n")
@@ -220,42 +220,54 @@ while playing:
     occupied = set()
     shots = set()
     opp = set()
-    guesses = 10
+    guesses = 25
 
-    print("\nPlayer's board:")
     player_ship_coordinate(player_board, occupied)
+    print("\nPlayer's board:")
     display_battlefield(player_board)
 
-    for n in range(guesses):
-        player_ships_hit = sum(row.count("H|") for row in player_hit)
-        comp_ships_hit = sum(row.count("B|") + row.count("C|") + row.count("F|") + row.count("A|") + row.count("S|") for row in comp_hit)
+    while guesses > 0:
+        #Player's turn
         print("\nIt's your turn to guess!")
-        row, col = get_input_from_player()
-        check_player_hit(comp_board, player_hit, row, col)
-        guesses=guesses-1
-        print("\nYour guesses so far:")        
-        display_battlefield(player_hit)
         #Pluralization for guesses left
+        print(guesses)
         if guesses > 1:
             print(f"You have {guesses} guesses left.")
         elif guesses == 1:
             print(f"You have {guesses} guess left.")
+        row, col = get_input_from_player()
+        check_player_hit(comp_board, player_hit, row, col)
+        guesses = guesses-1
+        print("\nYour guesses so far:")        
+        display_battlefield(player_hit)
 
+        #Computer's turn
         print("\nComputer's turn to guess!")
-        position = comp_shots[n]
+        position = comp_shots[guesses]
         row = position // map_size
         col = position % map_size
         check_comp_hit(player_board, comp_hit, row, col)
         display_battlefield(player_board)
 
+        #Count number of ships hit
+        player_ships_hit = sum(row.count("H|") for row in player_hit)
+        comp_ships_hit = sum(row.count("B|") + row.count("C|") + row.count("F|") + row.count("A|") + row.count("S|") for row in comp_hit)
+
         #If guesses are 0, check who won and end game
         if guesses == 0:
             print("\nYou've used all your guesses.")
-            if player_ships_hit > comp_ships_hit:
-                print("\nCongratulations! You've sunk more computer ships than the computer. You win!")
+            if player_ships_hit == comp_ships_hit:
+                print("\nGame over! You have both sunk the same number of ships! It was a tie!")
                 break
             elif player_ships_hit < comp_ships_hit:
                 print("\nGame over! The computer has sunk more of your ships than you. You lose!")
-        if check_win(player_ships_hit, comp_ships_hit):
+                break
+            if player_ships_hit > comp_ships_hit:
+                print("\nCongratulations! You've sunk more ships than the computer. You win!")
+
+        #If all of board ships are gone, end turn loop
+        allShipsGone = check_win(player_ships_hit, comp_ships_hit)
+        if allShipsGone == True:
             guesses = 0
+
     playing = play_again()    
