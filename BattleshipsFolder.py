@@ -86,7 +86,6 @@ def get_input_from_player():
     return row, col
 
 def check_player_hit(comp_board, player_hit, row, col, player_points):
-    player_points = 0
     #Player hit or missed on enemy ship
     if comp_board[row][col] == "X|":
         player_hit[row][col] = "H|"
@@ -126,7 +125,7 @@ def check_comp_hit(player_board, comp_hit, row, col, comp_points):
     else:
         comp_hit[row][col] = "M|"
         print("Opponent missed!")
-        comp_points = comp_points - 1
+        comp_points - 1
     player_board[row][col] = "*|"
     print(f"Opponent points: {comp_points}")
     return comp_hit, comp_points
@@ -177,8 +176,8 @@ while playing:
     shots = set()
     opp = set()
     guesses = map_size**2
-    player_points = 0
-    comp_points = 0
+    player_points = int(0)
+    comp_points = int(0)
 
     player_ship_coordinate(player_board, occupied)
     print("\nPlayer's board:")
@@ -193,7 +192,7 @@ while playing:
         elif guesses == 1:
             print(f"You have {guesses} guess left.")
         row, col = get_input_from_player()
-        player_points = check_player_hit(comp_board, player_hit, row, col, player_points)
+        check_player_hit(comp_board, player_hit, row, col, player_points)
         guesses = guesses-1
         print("\nYour guesses so far:")        
         display_battlefield(player_hit)
@@ -203,7 +202,7 @@ while playing:
         position = comp_shots[guesses]
         row = position // map_size
         col = position % map_size
-        comp_points = check_comp_hit(player_board, comp_hit, row, col, comp_points)
+        check_comp_hit(player_board, comp_hit, row, col, comp_points)
         display_battlefield(player_board)
 
         #Count number of ships hit
