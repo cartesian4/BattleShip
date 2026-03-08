@@ -85,50 +85,40 @@ def get_input_from_player():
             print("Invalid input. Please enter a valid integer.")
     return row, col
 
-def check_player_hit(comp_board, player_hit, row, col, player_points):
+def check_player_hit(comp_board, player_hit, row, col):
     #Player hit or missed on enemy ship
     if comp_board[row][col] == "X|":
         player_hit[row][col] = "H|"
-        player_points = player_points + 10
         print("Computer Ship has been hit!")
     else:
         player_hit[row][col] = "M|"
-        player_points = player_points - 1
         print("You missed!")
-    print(f"Your points: {player_points}")
-    return player_hit, player_points
+    return player_hit
 
-def check_comp_hit(player_board, comp_hit, row, col, comp_points):
+def check_comp_hit(player_board, comp_hit, row, col):
     #Whether the computer hit or missed the player ship
     print(f"Computer guessed: Row {row+1}, Column {col+1}")
     if player_board[row][col] == "B|":
-        comp_hit[row][col] = "B|"
-        comp_points = comp_points + 10
+        comp_hit[row][col] = "H|"
         print("Player Battleship has been hit!")
     elif player_board[row][col] == "C|":
-        comp_hit[row][col] = "C|"
-        comp_points = comp_points + 10
+        comp_hit[row][col] = "H|"
         print("Player Cruiser has been hit!")
     elif player_board[row][col] == "F|":
-        comp_hit[row][col] = "F|"
-        comp_points = comp_points + 10
+        comp_hit[row][col] = "H|"
         print("Player Frigate has been hit!")
     elif player_board[row][col] == "A|":
-        comp_hit[row][col] = "A|"
-        comp_points = comp_points + 10
+        comp_hit[row][col] = "H|"
         print("Player Aircraft carrier has been hit!")
-    elif player_board[row][col] == "S":
-        comp_hit[row][col] = "S|"
-        comp_points = comp_points + 10
+    elif player_board[row][col] == "S|":
+        comp_hit[row][col] = "H|"
         print("Player Sub has been hit!")
 
     else:
         comp_hit[row][col] = "M|"
         print("Opponent missed!")
-        comp_points - 1
     player_board[row][col] = "*|"
-    print(f"Opponent points: {comp_points}")
-    return comp_hit, comp_points
+    return comp_hit
 
 def play_again():
     while True:
@@ -176,8 +166,6 @@ while playing:
     shots = set()
     opp = set()
     guesses = map_size**2
-    player_points = int(0)
-    comp_points = int(0)
 
     player_ship_coordinate(player_board, occupied)
     print("\nPlayer's board:")
@@ -192,7 +180,7 @@ while playing:
         elif guesses == 1:
             print(f"You have {guesses} guess left.")
         row, col = get_input_from_player()
-        check_player_hit(comp_board, player_hit, row, col, player_points)
+        check_player_hit(comp_board, player_hit, row, col)
         guesses = guesses-1
         print("\nYour guesses so far:")        
         display_battlefield(player_hit)
@@ -202,12 +190,12 @@ while playing:
         position = comp_shots[guesses]
         row = position // map_size
         col = position % map_size
-        check_comp_hit(player_board, comp_hit, row, col, comp_points)
+        check_comp_hit(player_board, comp_hit, row, col)
         display_battlefield(player_board)
 
         #Count number of ships hit
         player_ships_hit = sum(row.count("H|") for row in player_hit)
-        comp_ships_hit = sum(row.count("B|") + row.count("C|") + row.count("F|") + row.count("A|") + row.count("S|") for row in comp_hit)
+        comp_ships_hit = sum(row.count("H|") for row in comp_hit)
 
         #If guesses are 0, check who won and end game
         if guesses == 0:
@@ -225,7 +213,8 @@ while playing:
         allShipsGone = check_win(player_ships_hit, comp_ships_hit)
         if allShipsGone == True:
             guesses = 0
-        
+    player_points = sum(row.count("H|") for row in player_hit) * 10 - sum(row.count("M|") for row in player_hit)
+    comp_points = sum(row.count("H|") for row in comp_hit) * 10 - sum(row.count("M|") for row in player_hit)
     print(f"\nYour points: {player_points}")
     print(f"\nOpponent points: {comp_points}")
 
