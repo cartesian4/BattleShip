@@ -112,7 +112,7 @@ def check_comp_hit(player_board, comp_hit, row, col):
         print("Player Aircraft carrier has been hit!")
     elif player_board[row][col] == "S|":
         comp_hit[row][col] = "H|"
-        print("Player Sub has been hit!")
+        print("Player Submarine has been hit!")
 
     else:
         comp_hit[row][col] = "M|"
