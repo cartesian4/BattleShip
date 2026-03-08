@@ -40,7 +40,6 @@ def viable_location_comp(row, col):
 
 def player_ship_coordinate(player_board, occupied):
     battleship_count = 0
-    ship_value = [None]*(number_of_ships)
     #Function for player placement ship
     while battleship_count <= number_of_ships-1:
         try:
