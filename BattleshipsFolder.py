@@ -1,5 +1,4 @@
 import random as rand
-import pygame as py
 
 playing = True
 
@@ -57,7 +56,6 @@ def player_ship_coordinate(player_board, occupied):
         #Increases the battleship value (from array) being printed.
 
     return player_board, occupied
-
 
 def comp_ship_coordinate(comp_board):
     # Picks values between 0 and map_size * map_size and creates opponent board
@@ -164,7 +162,7 @@ while playing:
     occupied = set()
     shots = set()
     opp = set()
-    guesses = map_size**2
+    guesses = (map_size**2)//2
 
     player_ship_coordinate(player_board, occupied)
     print("\nPlayer's board:")
@@ -212,9 +210,10 @@ while playing:
         allShipsGone = check_win(player_ships_hit, comp_ships_hit)
         if allShipsGone == True:
             guesses = 0
+
+    #Point system.
     player_points = sum(row.count("H|") for row in player_hit) * 10 - sum(row.count("M|") for row in player_hit)
     comp_points = sum(row.count("H|") for row in comp_hit) * 10 - sum(row.count("M|") for row in player_hit)
     print(f"\nYour points: {player_points}")
     print(f"\nOpponent points: {comp_points}")
-
     playing = play_again()    
