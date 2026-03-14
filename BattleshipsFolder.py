@@ -58,12 +58,14 @@ def player_ship_coordinate(player_board, occupied):
     return player_board, occupied
 
 def comp_ship_coordinate(comp_board):
+    n = 0
     # Picks values between 0 and map_size * map_size and creates opponent board
     unique_array = rand.sample(range(0, map_size * map_size), len(ship_initial))
     for position in unique_array:
         x = position // map_size
         y = position % map_size
-        comp_board[x][y] = "X|"
+        comp_board[x][y] = f"{ship_initial[n]}"
+        n = n + 1
     return comp_board
 
 def get_input_from_player():
@@ -73,7 +75,7 @@ def get_input_from_player():
             row = int(input("\nEnter your row: "))-1
             col = int(input("Enter your col: "))-1
             if viable_location_hits(row, col):
-                player_hit[row][col] = "This does nothing.|"
+                player_hit[row][col] = "Placeholder string. Will be replaced with either 'Hit' or 'Miss'."
                 shots.add((row, col))
                 break
             else:
@@ -84,9 +86,21 @@ def get_input_from_player():
 
 def check_player_hit(comp_board, player_hit, row, col):
     #Player hit or missed on enemy ship
-    if comp_board[row][col] == "X|":
+    if comp_board[row][col] == "B|":
         player_hit[row][col] = "H|"
-        print("Computer Ship has been hit!")
+        print("Computer Battleship has been hit!")
+    elif comp_board[row][col] == "C|":
+        player_hit[row][col] = "H|"
+        print("Computer Cruiser has been hit!")
+    elif comp_board[row][col] == "F|":
+        player_hit[row][col] = "H|"
+        print("Computer Frigate has been hit!")
+    elif comp_board[row][col] == "A|":
+        player_hit[row][col] = "H|"
+        print("Computer Aircraft carrier has been hit!")
+    elif comp_board[row][col] == "S|":
+        player_hit[row][col] = "H|"
+        print("Computer Submarine has been hit!")
     else:
         player_hit[row][col] = "M|"
         print("You missed!")
@@ -162,7 +176,7 @@ while playing:
     occupied = set()
     shots = set()
     opp = set()
-    guesses = (map_size**2)//2
+    guesses = (map_size**2)
 
     player_ship_coordinate(player_board, occupied)
     print("\nPlayer's board:")
@@ -212,8 +226,8 @@ while playing:
             guesses = 0
 
     #Point system.
-    player_points = sum(row.count("H|") for row in player_hit) * 10 - sum(row.count("M|") for row in player_hit)
-    comp_points = sum(row.count("H|") for row in comp_hit) * 10 - sum(row.count("M|") for row in player_hit)
+    player_points = sum(row.count("H|") for row in player_hit) * 2 - sum(row.count("M|") for row in player_hit)
+    comp_points = sum(row.count("H|") for row in comp_hit) * 2 - sum(row.count("M|") for row in player_hit)
     print(f"\nYour points: {player_points}")
     print(f"\nOpponent points: {comp_points}")
-    playing = play_again()    
+    playing = play_again()
