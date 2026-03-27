@@ -127,15 +127,16 @@ while True:
     sc.blit(pygame.transform.scale(v_sc, (W, H)), (0, 0))
     
     # Custom Crosshair
-    pygame.draw.line(sc, (0, 255, 0), (W//2-10, H//2), (W//2+10, H//2), 2)
-    pygame.draw.line(sc, (0, 255, 0), (W//2, H//2-10), (W//2, H//2+10), 2)
+    pygame.draw.line(sc, (150, 150, 150), (W//2-10, H//2), (W//2+10, H//2), 2)
+    pygame.draw.line(sc, (150, 150, 150), (W//2, H//2-10), (W//2, H//2+10), 2)
 
     # Status Bar
     pygame.draw.rect(sc, (30, 30, 30), (0, H-80, W, 80))
-    face = (0, 255, 0) if p.hp > 6 else (255, 255, 0) if p.hp > 3 else (255, 0, 0)
-    pygame.draw.rect(sc, face, (W//2-25, H-70, 50, 60))
-    sc.blit(f_huge.render(f"{p.hp*10}%", True, (200,0,0)), (50, H-85))
-    sc.blit(f_huge.render(f"LVL {p.level}", True, (200,200,200)), (W-250, H-85))
+    pygame.draw.rect(sc, (200,200,200), (220, H-60, W-430, 40))
+    face = (255-(p.hp)*17, 0+p.hp*17+50, 0)
+    pygame.draw.rect(sc, face, (220, H-60, p.hp*37, 40))
+    sc.blit(f_huge.render(f"{p.hp*10}%", True, face), (20, H-90))
+    sc.blit(f_huge.render(f"LVL {p.level}", True, (200,200,200)), (W-170, H-90))
 
     if p.hp <= 0: exit()
     pygame.display.flip(); clock.tick(60)
